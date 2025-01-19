@@ -69,6 +69,8 @@ The timeout is particularly important for:
 
 The server provides a single tool `run_tox_tests` that can be used in different modes:
 
+### Tool Arguments
+
 ```typescript
 // Run all tests
 {
@@ -98,6 +100,47 @@ The server provides a single tool `run_tox_tests` that can be used in different 
 {
   "mode": "directory",
   "directory": "tests/api/"
+}
+```
+
+### Using with Cline
+
+When using this MCP with Cline, you can configure Cline's Custom Instructions to handle test execution efficiently. Here's a recommended workflow:
+
+```
+If asked to run tests on the project, use the tox-testing MCP. Follow these steps:
+1. Run all tests across the project unless you are given instructions to run a specific test file or test case. 
+2. Review and rerun each failed test case individually as you troubleshoot and fix the issue from its output.
+3. Repeat step 2 until the testcase passes.
+4. Once all failed test cases from step 1 are passing rerun all tests again and repeat all steps until all tests pass.
+```
+
+This workflow ensures:
+- Comprehensive test coverage by running all tests first
+- Focused debugging by isolating failed test cases
+- Verification of fixes by retesting individual cases
+- Final validation by running all tests again
+
+Example interactions with Cline:
+
+```
+You: Run the tests for this project
+Cline: I'll use the tox-testing MCP to run all tests:
+{
+  "mode": "all"
+}
+
+You: Fix the failing test in test_api.py
+Cline: I'll first run the specific test file:
+{
+  "mode": "file",
+  "testFile": "tests/test_api.py"
+}
+Then address each failing test case individually:
+{
+  "mode": "case",
+  "testFile": "tests/test_api.py",
+  "testCase": "test_endpoint_response"
 }
 ```
 
